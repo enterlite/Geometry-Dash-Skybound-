@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AppDesktopCompat>true</AppDesktopCompat>
+    <AssemblyName>SkyboundLauncher</AssemblyName>
+    <RootNamespace>SkyboundLauncher</RootNamespace>
+    <ApplicationIcon>image/sb.ico</ApplicationIcon>
+    <Version>1.3.0.0</Version>
+    <FileVersion>1.3.0.0</FileVersion>
+    <!-- Self-contained deployment - .NET 9 included -->
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- JSON configuration -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+    <!-- HTTP client for downloads -->
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <!-- NotifyIcon for system tray -->
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <!-- Modern Icons - FontAwesome Sharp for Windows 11 style icons -->
+    <PackageReference Include="FontAwesome.Sharp" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Video background resource - copy to output directory -->
+    <None Include="image/BC.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- Image resources -->
+    <Resource Include="image/logo-sb.png" />
+    <Resource Include="image/cube.png" />
+    <Resource Include="image/cube2.png" />
+    <Resource Include="image/cube3.png" />
+    <Resource Include="image/cube4.png" />
+    <Resource Include="image/cube5.png" />
+    <!-- Icon files for buttons -->
+    <Resource Include="image/icons/download.png" />
+    <Resource Include="image/icons/play.png" />
+    <Resource Include="image/icons/maintenance.png" />
+    <Resource Include="image/icons/delete.png" />
+    <Resource Include="image/icons/close.png" />
+    <Resource Include="image/icons/minus.png" />
+    <Resource Include="image/icons/settings.png" />
+    <Resource Include="image/icons/volume.png" />
+    <!-- Icon file for system tray - copy to output -->
+    <None Include="image/sb.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- Font resources -->
+    <Resource Include="fonts/Chillax_Complete/Fonts/OTF/Chillax-Medium.otf" />
+  </ItemGroup>
+
+</Project>

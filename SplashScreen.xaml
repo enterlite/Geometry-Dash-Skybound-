@@ -1,0 +1,145 @@
+<Window x:Class="SkyboundLauncher.SplashScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Skybound Launcher"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Height="600"
+        Width="800"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <!-- Fade In animace -->
+        <Storyboard x:Key="FadeInAnimation">
+            <DoubleAnimation Storyboard.TargetName="LogoImage" 
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:1" />
+        </Storyboard>
+        
+        <!-- Fade Out animace -->
+        <Storyboard x:Key="FadeOutAnimation">
+            <DoubleAnimation Storyboard.TargetName="LogoImage" 
+                           Storyboard.TargetProperty="Opacity"
+                           From="1" To="0" Duration="0:0:1" />
+        </Storyboard>
+
+        <!-- Fade Out animace pro krychle -->
+        <Storyboard x:Key="CubesFadeOutAnimation">
+            <DoubleAnimation Storyboard.TargetName="CubesPanel" 
+                           Storyboard.TargetProperty="Opacity"
+                           From="1" To="0" Duration="0:0:1" />
+        </Storyboard>
+    </Window.Resources>
+
+    <Canvas Background="Transparent">
+        <!-- Logo s animacemi -->
+        <Image x:Name="LogoImage"
+               Source="pack://application:,,,/image/logo-sb.png"
+               Canvas.Left="150"
+               Canvas.Top="80"
+               Width="500"
+               Height="179"
+               Stretch="Uniform"
+               Opacity="0"
+               RenderTransformOrigin="0.5,0.5"/>
+
+        <!-- Container pro krychle - orbitalní animace kolem loga -->
+        <Canvas x:Name="CubesPanel" 
+                Canvas.Left="400" 
+                Canvas.Top="170" 
+                Width="1" 
+                Height="1" 
+                Opacity="1">
+            <Image x:Name="Cube1"
+                   Width="50"
+                   Height="50"
+                   Stretch="Uniform"
+                   Canvas.Left="-25"
+                   Canvas.Top="-25"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform x:Name="Cube1Rotation" Angle="0"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Cube2"
+                   Width="50"
+                   Height="50"
+                   Stretch="Uniform"
+                   Canvas.Left="-25"
+                   Canvas.Top="-25"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform x:Name="Cube2Rotation" Angle="0"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Cube3"
+                   Width="50"
+                   Height="50"
+                   Stretch="Uniform"
+                   Canvas.Left="-25"
+                   Canvas.Top="-25"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform x:Name="Cube3Rotation" Angle="0"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Cube4"
+                   Width="50"
+                   Height="50"
+                   Stretch="Uniform"
+                   Canvas.Left="-25"
+                   Canvas.Top="-25"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform x:Name="Cube4Rotation" Angle="0"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Cube5"
+                   Width="50"
+                   Height="50"
+                   Stretch="Uniform"
+                   Canvas.Left="-25"
+                   Canvas.Top="-25"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform x:Name="Cube5Rotation" Angle="0"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+        </Canvas>
+
+        <!-- Procenta -->
+        <TextBlock x:Name="ProgressText"
+                   Canvas.Left="0"
+                   Canvas.Top="380"
+                   Width="800"
+                   Text="0%"
+                   Foreground="#00d9ff"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   TextAlignment="Center"
+                   Opacity="0.8"/>
+
+        <!-- Loading text -->
+        <TextBlock Canvas.Left="0"
+                   Canvas.Top="420"
+                   Width="800"
+                   Text="Initializing the application..."
+                   Foreground="#b0b0c0"
+                   FontSize="14"
+                   TextAlignment="Center"
+                   Opacity="0.6"/>
+    </Canvas>
+</Window>

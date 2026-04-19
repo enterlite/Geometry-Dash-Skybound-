@@ -1,0 +1,540 @@
+<Window x:Class="SkyboundLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SkyboundLauncher"
+        mc:Ignorable="d"
+        Title="Skybound Launcher" 
+        Height="800" 
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="#0f0f1e"
+        Foreground="#ffffff"
+        FontFamily="Segoe UI, Rubik"
+        FontWeight="Normal"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <!-- Animace pro gradient background -->
+        <Storyboard x:Key="GradientAnimation" RepeatBehavior="Forever">
+            <ColorAnimation Storyboard.TargetName="GradientStop1" 
+                          Storyboard.TargetProperty="Color"
+                          From="#0066cc" To="#003d99" Duration="0:0:4" AutoReverse="True"/>
+            <ColorAnimation Storyboard.TargetName="GradientStop2" 
+                          Storyboard.TargetProperty="Color"
+                          From="#003d99" To="#0066cc" Duration="0:0:4" AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="BackgroundTransform" 
+                           Storyboard.TargetProperty="(RotateTransform.Angle)"
+                           From="0" To="360" Duration="0:0:10" RepeatBehavior="Forever"/>
+        </Storyboard>
+
+        <!-- Animace rotace pro spinner -->
+        <Storyboard x:Key="SpinnerRotation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Spinner" 
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                           From="0" To="360" Duration="0:0:2"/>
+            <DoubleAnimation Storyboard.TargetName="SpinnerExtract" 
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                           From="0" To="360" Duration="0:0:2"/>
+        </Storyboard>
+        
+        <!-- Converter from LauncherState to Visibility -->
+        <local:StateToVisibilityConverter x:Key="StateToVisibilityConverter"/>
+        <local:DictionaryValueConverter x:Key="DictionaryValueConverter"/>
+    </Window.Resources>
+
+    <Border BorderThickness="1" BorderBrush="#333333" CornerRadius="0">
+        <Grid>
+            <!-- Video background with GPU acceleration - MAIN BACKGROUND - AUTO-PLAY -->
+            <MediaElement x:Name="VideoBackground"
+                         Stretch="UniformToFill"
+                         Opacity="0.2"
+                         LoadedBehavior="Play"
+                         UnloadedBehavior="Stop"
+                         IsMuted="False"/>
+
+            <!-- Obsah -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+
+                <!-- Top bar with language buttons and news TABS -->
+                <Border x:Name="TopBar" Grid.Row="0" Background="#1a1a2e99" BorderThickness="0,0,0,1" BorderBrush="{StaticResource PurpleWhiteGradient}" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#00d9ff" BlurRadius="8" ShadowDepth="0" Opacity="0.3"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Buttons for switching between news -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10,0" VerticalAlignment="Center">
+                            <Button Content="📰 Game News" 
+                                    Tag="GameNews"
+                                    Click="NewsTab_Click"
+                                    x:Name="GameNewsBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="#00d9ff99"
+                                    Foreground="#00d9ff"
+                                    BorderThickness="0,0,0,2"
+                                    BorderBrush="{StaticResource PurpleWhiteGradient}"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="⚙️ Launcher Updates" 
+                                    Tag="LauncherNews"
+                                    Click="NewsTab_Click"
+                                    x:Name="LauncherNewsBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="🎵 Upload Music" 
+                                    Tag="UploadMusic"
+                                    Click="UploadMusic_Click"
+                                    x:Name="UploadMusicBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="👤 Register Account" 
+                                    Tag="RegisterAccount"
+                                    Click="RegisterAccount_Click"
+                                    x:Name="RegisterAccountBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="📊 Dashboard" 
+                                    Tag="Dashboard"
+                                    Click="Dashboard_Click"
+                                    x:Name="DashboardBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="🔑 Forgot Password?" 
+                                    Tag="ForgotPassword"
+                                    Click="ForgotPassword_Click"
+                                    x:Name="ForgotPasswordBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="🐛 Debug Console" 
+                                    Tag="DebugConsole"
+                                    Click="DebugConsole_Click"
+                                    x:Name="DebugConsoleBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                            <Button Content="🎮 Discord Server" 
+                                    Tag="DiscordServer"
+                                    Click="DiscordServer_Click"
+                                    x:Name="DiscordServerBtn"
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Background="Transparent"
+                                    Foreground="#b0b0c0"
+                                    BorderThickness="0"
+                                    Padding="15,5"
+                                    Margin="0,0,10,0"
+                                    FontSize="11"
+                                    Cursor="Hand"/>
+                        </StackPanel>
+
+                        <!-- Language and Control buttons - right -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Button Tag="CZ"
+                                    Style="{StaticResource ModernSecondaryButtonStyle}"
+                                    Command="{Binding SetLanguageCommand}"
+                                    CommandParameter="Czech"
+                                    Height="32"
+                                    Width="45"
+                                    Margin="0,0,5,0"
+                                    FontSize="10"
+                                    ToolTip="Czech"
+                                    Padding="0">
+                                    <TextBlock Text="🇨🇿" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Button>
+                            <Button Tag="EN"
+                                    Style="{StaticResource ModernSecondaryButtonStyle}"
+                                    Command="{Binding SetLanguageCommand}"
+                                    CommandParameter="English"
+                                    Height="32"
+                                    Width="45"
+                                    Margin="0,0,5,0"
+                                    FontSize="10"
+                                    ToolTip="English"
+                                    Padding="0">
+                                    <TextBlock Text="🇬🇧" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Button>
+                            <Button Tag="DE"
+                                    Style="{StaticResource ModernSecondaryButtonStyle}"
+                                    Command="{Binding SetLanguageCommand}"
+                                    CommandParameter="German"
+                                    Height="32"
+                                    Width="45"
+                                    Margin="0,0,5,0"
+                                    FontSize="10"
+                                    ToolTip="Deutsch"
+                                    Padding="0">
+                                    <TextBlock Text="🇩🇪" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Button>
+                            <Button Tag="ES"
+                                    Style="{StaticResource ModernSecondaryButtonStyle}"
+                                    Command="{Binding SetLanguageCommand}"
+                                    CommandParameter="Spanish"
+                                    Height="32"
+                                    Width="45"
+                                    Margin="0,0,15,0"
+                                    FontSize="10"
+                                    ToolTip="Español"
+                                    Padding="0">
+                                    <TextBlock Text="🇪🇸" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Button>
+                            
+                            <!-- Minimize button -->
+                            <Button x:Name="MinimizeBtn"
+                                    Click="MinimizeButton_Click"
+                                    Height="32"
+                                    Width="40"
+                                    Margin="0,0,5,0"
+                                    Background="#2a2a3e99"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource PurpleWhiteGradient}"
+                                    Cursor="Hand"
+                                    Padding="8,6"
+                                    ToolTip="Minimize">
+                                <Image Source="pack://application:,,,/image/icons/minus.png" Width="16" Height="16" Stretch="Uniform"/>
+                            </Button>
+                            
+                            <!-- Close button -->
+                            <Button x:Name="CloseBtn"
+                                    Click="CloseButton_Click"
+                                    Height="32"
+                                    Width="40"
+                                    Background="#2a2a3e99"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource PurpleWhiteGradient}"
+                                    Cursor="Hand"
+                                    Padding="8,6"
+                                    ToolTip="Close">
+                                <Image Source="pack://application:,,,/image/icons/close.png" Width="16" Height="16" Stretch="Uniform"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ContentControl for layered tabs -->
+                <ContentControl Grid.Row="1" x:Name="TabContentControl" Panel.ZIndex="1"/>
+
+                <!-- News content in center - MODAL OVERLAY - LARGER AND MORE VISIBLE -->
+                <Grid Grid.Row="1" x:Name="NewsOverlay" Background="#000000f0" Visibility="Collapsed" Panel.ZIndex="999">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="900" MaxHeight="600">
+                        <!-- Glasmorphic background - DARK -->
+                        <Border Background="#0f0f1ef5" Padding="40" BorderThickness="2" BorderBrush="{StaticResource PurpleWhiteGradient}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="0" Opacity="0.8"/>
+                            </Border.Effect>
+                            <Border.CornerRadius>
+                                <CornerRadius TopLeft="12" TopRight="12" BottomLeft="12" BottomRight="12"/>
+                            </Border.CornerRadius>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title with Close button -->
+                                <Grid Grid.Row="0" Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock x:Name="NewsModalTitle" FontSize="20" Foreground="#00d9ff" 
+                                              FontWeight="Bold" Grid.Column="0" VerticalAlignment="Center"/>
+                                    
+                                    <Button Grid.Column="1" Content="✕" FontSize="18" Click="CloseNews_Click"
+                                           Background="#ff3333" Foreground="White" Padding="10,6" 
+                                           BorderThickness="0" Cursor="Hand" 
+                                           Height="36" Width="36" VerticalAlignment="Center">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </Grid>
+
+                                <!-- Content -->
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="350">
+                                    <TextBlock x:Name="NewsModalContent" FontSize="13" Foreground="#cccccc" 
+                                              TextWrapping="Wrap" LineHeight="20"/>
+                                </ScrollViewer>
+
+                                <!-- Close button at bottom -->
+                                <Button Grid.Row="2" Content="Close" Click="CloseNews_Click" 
+                                       Background="#404040" Foreground="White" Padding="10,8" 
+                                       BorderThickness="0" Cursor="Hand" HorizontalAlignment="Right" Margin="0,15,0,0"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Hlavní obsah (stará struktura - jen pokud není zobrazena novina) -->
+                <StackPanel Grid.Row="1" Margin="40,40,40,20" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                    <!-- Logo -->
+                    <Image Source="pack://application:,,,/image/logo-sb.png" 
+                           Width="500" 
+                           Height="179"
+                           Margin="0,0,0,20"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"/>
+
+                    <!-- Stav -->
+                    <TextBlock x:Name="StatusText"
+                               Text="{Binding StatusMessage}"
+                               FontSize="14"
+                               Foreground="#cccccc"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,20"
+                               MinHeight="40"
+                               TextAlignment="Center"/>
+
+                    <!-- Download Progress -->
+                    <StackPanel Visibility="{Binding CurrentState, Converter={StaticResource StateToVisibilityConverter}, ConverterParameter=Downloading}">
+                        <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=Downloading}" 
+                                   Foreground="#00d9ff" FontSize="12" Margin="0,0,0,20" TextAlignment="Center" FontWeight="Bold"/>
+                        
+                        <!-- Animační spinner -->
+                        <Grid HorizontalAlignment="Center" Margin="0,0,0,20" Height="50" Width="50">
+                            <Ellipse Name="Spinner" Stroke="#00d9ff" StrokeThickness="4" Fill="Transparent"
+                                    Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </Ellipse.RenderTransform>
+                                <Ellipse.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#00d9ff" Offset="0"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.OpacityMask>
+                            </Ellipse>
+                        </Grid>
+                        
+                        <!-- Progress bar -->
+                        <ProgressBar Height="6" Foreground="#00d9ff" Background="#333333" 
+                                     Value="{Binding DownloadProgress}" Margin="0,0,0,15"/>
+                        
+                        <!-- Procenta -->
+                        <TextBlock Text="{Binding DownloadProgress, StringFormat={}{0:F1}%}" 
+                                   Foreground="#999999" FontSize="11" Margin="0,0,0,10" TextAlignment="Center"/>
+                        
+                        <!-- Spuštění animace -->
+                        <StackPanel.Triggers>
+                            <EventTrigger RoutedEvent="StackPanel.Loaded">
+                                <BeginStoryboard Storyboard="{StaticResource SpinnerRotation}"/>
+                            </EventTrigger>
+                        </StackPanel.Triggers>
+                    </StackPanel>
+
+                    <!-- Extraction Progress -->
+                    <StackPanel Visibility="{Binding CurrentState, Converter={StaticResource StateToVisibilityConverter}, ConverterParameter=Extracting}">
+                        <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=Extracting}" 
+                                   Foreground="#00d9ff" FontSize="12" Margin="0,0,0,20" TextAlignment="Center" FontWeight="Bold"/>
+                        
+                        <!-- Animační spinner -->
+                        <Grid HorizontalAlignment="Center" Margin="0,0,0,20" Height="50" Width="50">
+                            <Ellipse Name="SpinnerExtract" Stroke="#00d9ff" StrokeThickness="4" Fill="Transparent"
+                                    Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </Ellipse.RenderTransform>
+                                <Ellipse.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#00d9ff" Offset="0"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.OpacityMask>
+                            </Ellipse>
+                        </Grid>
+                        
+                        <!-- Progress bar -->
+                        <ProgressBar Height="6" Foreground="#00d9ff" Background="#333333" 
+                                     Value="{Binding ExtractionProgress}" Margin="0,0,0,15"/>
+                        
+                        <!-- Procenta -->
+                        <TextBlock Text="{Binding ExtractionProgress, StringFormat={}{0:F1}%}" 
+                                   Foreground="#999999" FontSize="11" Margin="0,0,0,10" TextAlignment="Center"/>
+                        
+                        <!-- Spuštění animace -->
+                        <StackPanel.Triggers>
+                            <EventTrigger RoutedEvent="StackPanel.Loaded">
+                                <BeginStoryboard Storyboard="{StaticResource SpinnerRotation}"/>
+                            </EventTrigger>
+                        </StackPanel.Triggers>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- Tlačítka a hudba -->
+                <Border Grid.Row="2" Background="#0f0f1e99" BorderThickness="0,1,0,0" BorderBrush="{StaticResource PurpleWhiteGradient}" Padding="20,10,20,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#00d9ff" BlurRadius="8" ShadowDepth="0" Opacity="0.2"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Herní tlačítka -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <!-- Nenainstalováno -->
+                            <Button Style="{StaticResource ModernPrimaryButtonStyle}"
+                                    Command="{Binding DownloadGameCommand}"
+                                    Visibility="{Binding CurrentState, Converter={StaticResource StateToVisibilityConverter}, ConverterParameter=NotInstalled}"
+                                    Height="40"
+                                    Width="280"
+                                    Padding="15,10">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image Source="pack://application:,,,/image/icons/download.png" Width="16" Height="16" Margin="0,0,10,0"/>
+                                    <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=DownloadGame}" 
+                                               VerticalAlignment="Center" FontSize="13" FontWeight="Medium"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Připraveno ke hře -->
+                            <StackPanel Orientation="Horizontal" 
+                                        Visibility="{Binding CurrentState, Converter={StaticResource StateToVisibilityConverter}, ConverterParameter=ReadyToPlay}"
+                                        Margin="0"
+                                        HorizontalAlignment="Center">
+                                <Button Style="{StaticResource ModernPrimaryButtonStyle}"
+                                        Command="{Binding LaunchGameCommand}"
+                                        Click="LaunchGameButton_Click"
+                                        Margin="0,0,15,0"
+                                        Height="40"
+                                        Width="220"
+                                        Padding="12,10">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image Source="pack://application:,,,/image/icons/play.png" Width="16" Height="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=LaunchGame}" 
+                                                   VerticalAlignment="Center" FontSize="13" FontWeight="Medium"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource ModernSecondaryButtonStyle}"
+                                        Command="{Binding RepairGameCommand}"
+                                        Margin="0,0,15,0"
+                                        Height="40"
+                                        Width="180"
+                                        Padding="12,10">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image Source="pack://application:,,,/image/icons/maintenance.png" Width="16" Height="16" Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=RepairGame}" 
+                                                   VerticalAlignment="Center" FontSize="12" FontWeight="Medium"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource ModernSecondaryButtonStyle}"
+                                        Command="{Binding UninstallGameCommand}"
+                                        Height="40"
+                                        Width="180"
+                                        Padding="12,10">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image Source="pack://application:,,,/image/icons/delete.png" Width="16" Height="16" Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=Uninstall}" 
+                                                   VerticalAlignment="Center" FontSize="12" FontWeight="Medium"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <!-- Hra běží -->
+                            <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=GameRunning}"
+                                       Foreground="#00d9ff"
+                                       FontSize="14"
+                                       Visibility="{Binding CurrentState, Converter={StaticResource StateToVisibilityConverter}, ConverterParameter=GameRunning}"
+                                       VerticalAlignment="Center"/>
+
+                            <!-- Error -->
+                            <StackPanel Orientation="Vertical"
+                                        Visibility="{Binding CurrentState, Converter={StaticResource StateToVisibilityConverter}, ConverterParameter=Error}">
+                                <TextBlock Text="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=Error}" 
+                                           Foreground="#ff6b6b"
+                                           FontSize="12"
+                                           Margin="0,0,0,10"/>
+                                <Button Content="{Binding LanguageManager.Strings, Converter={StaticResource DictionaryValueConverter}, ConverterParameter=Back}" 
+                                        Style="{StaticResource ModernSecondaryButtonStyle}"
+                                        Click="BackButton_Click"
+                                        Width="150"
+                                        Height="35"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                            <Image Source="pack://application:,,,/image/icons/volume.png" Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Slider x:Name="VolumeSlider" 
+                                   Width="120" 
+                                   Height="18" 
+                                   Minimum="0" 
+                                   Maximum="1" 
+                                   Value="0.3"
+                                   Background="#333333"
+                                   Foreground="#00d9ff"
+                                   VerticalAlignment="Center"
+                                   PreviewMouseLeftButtonUp="VolumeSlider_ValueChanged"
+                                   ValueChanged="VolumeSlider_ValueChanged"/>
+                            <TextBlock x:Name="VolumePercent" 
+                                      Text="30%" 
+                                      FontSize="11" 
+                                      Foreground="#999999" 
+                                      VerticalAlignment="Center" 
+                                      Margin="10,0,0,0"
+                                      Width="30"
+                                      TextAlignment="Right"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

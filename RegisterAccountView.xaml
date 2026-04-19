@@ -1,0 +1,20 @@
+<UserControl x:Class="SkyboundLauncher.RegisterAccountView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             Background="#0f0f1e"
+             Foreground="#ffffff">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- WebView2 container -->
+        <Border BorderThickness="0" Background="#0f0f1e" Grid.Row="0">
+            <Grid x:Name="WebViewContainer" Background="#1a1a2e"/>
+        </Border>
+    </Grid>
+</UserControl>
